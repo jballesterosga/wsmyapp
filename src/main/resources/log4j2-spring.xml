@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console"
+                 target="SYSTEM_OUT">
+            <PatternLayout pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
+        </Console>
+        <RollingFile name="InfoFile"
+                     fileName="./logs/wsmyapp-info.log"
+                     filePattern="./logs/$${date:yyyy-MM}/wsmyapp-info-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+        <Async name="asyncInfo" 
+               blocking="false">
+            <AppenderRef ref="InfoFile"/>
+        </Async>
+        <RollingFile name="ErrorFile"
+                     fileName="./logs/wsmyapp-error.log"
+                     filePattern="./logs/$${date:yyyy-MM}/wsmyapp-error-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+        <Async name="asyncError" 
+               blocking="false">
+            <AppenderRef ref="ErrorFile"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="asyncInfo"/>
+        </Root>
+        <Logger name="wsmyapp"
+                level="error"
+                additivity="false">
+            <AppenderRef ref="asyncError"/>
+        </Logger>
+    </Loggers>
+</Configuration>
